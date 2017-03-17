@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        Log.d("", "");
         try {
             JSONObject options = new JSONObject();
             JSONObject info = new JSONObject();
