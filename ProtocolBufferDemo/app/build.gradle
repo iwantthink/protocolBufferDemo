@@ -71,7 +71,7 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.1.1'
     testCompile 'junit:junit:4.12'
-    compile 'com.google.protobuf:protobuf-java:3.2.0'
+    compile 'com.google.protobuf:protobuf-java:2.5.0'
     compile 'com.google.protobuf:protoc:3.1.0'
 //    compile 'com.google.protobuf:protobuf-lite:3.0.1'
 }
