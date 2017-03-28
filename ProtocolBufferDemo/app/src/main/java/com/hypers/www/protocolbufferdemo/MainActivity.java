@@ -7,11 +7,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.hypers.www.protocolbufferdemo.nano.AddressBookProtos;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,55 +32,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void buildMrb() {
-//        Addressbook.SearchRequest request =
-//                Addressbook.SearchRequest.newBuilder().setQuery("apple")
-//                        .setPageNumber(2)
-//                        .setResultPerPage(3).build();
 
         AddressBookProtos.AddressBook book =
-                AddressBookProtos.AddressBook.newBuilder()
-                        .addPeople(AddressBookProtos.Person.newBuilder()
-                                .setName("mrb")
-                                .setEmail("mrb@gmail.com")
-                                .setId(0)
-                                .addPhones(AddressBookProtos.Person.PhoneNumber.newBuilder()
-                                        .setNumber("110")
-                                        .setType(AddressBookProtos.Person.PhoneType.HOME)
-                                        .build())
-                                .build()
-                        )
-                        .addPeople(AddressBookProtos.Person.newBuilder()
-                                .setName("cyq")
-                                .setEmail("cyq@gmail.com")
-                                .setId(1)
-                                .addPhones(AddressBookProtos.Person.PhoneNumber.newBuilder()
-                                        .setNumber("112")
-                                        .setType(AddressBookProtos.Person.PhoneType.HOME)
-                                        .build())
-                                .build()
-                        )
-                        .build();
+                new AddressBookProtos.AddressBook();
 
-        List<AddressBookProtos.Person> list = book.getPeopleList();
-        for (AddressBookProtos.Person person : list) {
-            Log.d("MainActivity", "person.getId():" + person.getId());
-            Log.d("MainActivity", "person.getName():" + person.getName());
-        }
+        AddressBookProtos.Person p1 = new AddressBookProtos.Person();
+        p1.name = "mrb";
+        p1.email = "mrb@gmail.com";
+        p1.id = 1;
 
-
-//        book.toBuilder().addPeople(AddressBookProtos.Person.newBuilder()
-//                .setName("cyq")
-//                .setEmail("cyq@gmail.com")
-//                .setId(1)
-//                .addPhones(AddressBookProtos.Person.PhoneNumber.newBuilder()
-//                        .setNumber("120")
-//                        .setType(AddressBookProtos.Person.PhoneType.HOME)
-//                        .build())
-//                .build())
-//                .build();
-
-//        AddressBookProtos.AddressBook.parseFrom(byte);
-
+        AddressBookProtos.Person.PhoneNumber number = new AddressBookProtos.Person.PhoneNumber();
+        number.number = "110";
+        number.type = AddressBookProtos.Person.MOBILE;
+        p1.phones = new AddressBookProtos.Person.PhoneNumber[]{number};
+        book.people = new AddressBookProtos.Person[]{p1};
 
         File dir = Environment.getExternalStorageDirectory();
         File file = new File(dir, "address");
@@ -95,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.d("MainActivity", file.getAbsolutePath());
         try {
-            byte[] arry = book.toByteArray();
+            byte[] arry = AddressBookProtos.AddressBook.toByteArray(book);
             Log.d("MainActivity", "arry.length:" + arry.length);
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(arry);

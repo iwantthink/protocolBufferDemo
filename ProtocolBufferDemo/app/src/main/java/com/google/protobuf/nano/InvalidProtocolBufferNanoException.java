@@ -1,6 +1,6 @@
 // Protocol Buffers - Google's data interchange format
-// Copyright 2008 Google Inc.  All rights reserved.
-// http://code.google.com/p/protobuf/
+// Copyright 2013 Google Inc.  All rights reserved.
+// https://developers.google.com/protocol-buffers/
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -28,7 +28,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package com.google.protobuf;
+package com.google.protobuf.nano;
 
 import java.io.IOException;
 
@@ -38,76 +38,55 @@ import java.io.IOException;
  *
  * @author kenton@google.com Kenton Varda
  */
-public class InvalidProtocolBufferException extends IOException {
+public class InvalidProtocolBufferNanoException extends IOException {
   private static final long serialVersionUID = -1616151763072450476L;
-  private MessageLite unfinishedMessage = null;
 
-  public InvalidProtocolBufferException(final String description) {
+  public InvalidProtocolBufferNanoException(final String description) {
     super(description);
   }
 
-  /**
-   * Attaches an unfinished message to the exception to support best-effort
-   * parsing in {@code Parser} interface.
-   *
-   * @return this
-   */
-  public InvalidProtocolBufferException setUnfinishedMessage(
-      MessageLite unfinishedMessage) {
-    this.unfinishedMessage = unfinishedMessage;
-    return this;
-  }
-
-  /**
-   * Returns the unfinished message attached to the exception, or null if
-   * no message is attached.
-   */
-  public MessageLite getUnfinishedMessage() {
-    return unfinishedMessage;
-  }
-
-  static InvalidProtocolBufferException truncatedMessage() {
-    return new InvalidProtocolBufferException(
+  static InvalidProtocolBufferNanoException truncatedMessage() {
+    return new InvalidProtocolBufferNanoException(
       "While parsing a protocol message, the input ended unexpectedly " +
-      "in the middle of a field.  This could mean either than the " +
+      "in the middle of a field.  This could mean either that the " +
       "input has been truncated or that an embedded message " +
       "misreported its own length.");
   }
 
-  static InvalidProtocolBufferException negativeSize() {
-    return new InvalidProtocolBufferException(
+  static InvalidProtocolBufferNanoException negativeSize() {
+    return new InvalidProtocolBufferNanoException(
       "CodedInputStream encountered an embedded string or message " +
       "which claimed to have negative size.");
   }
 
-  static InvalidProtocolBufferException malformedVarint() {
-    return new InvalidProtocolBufferException(
+  static InvalidProtocolBufferNanoException malformedVarint() {
+    return new InvalidProtocolBufferNanoException(
       "CodedInputStream encountered a malformed varint.");
   }
 
-  static InvalidProtocolBufferException invalidTag() {
-    return new InvalidProtocolBufferException(
+  static InvalidProtocolBufferNanoException invalidTag() {
+    return new InvalidProtocolBufferNanoException(
       "Protocol message contained an invalid tag (zero).");
   }
 
-  static InvalidProtocolBufferException invalidEndTag() {
-    return new InvalidProtocolBufferException(
+  static InvalidProtocolBufferNanoException invalidEndTag() {
+    return new InvalidProtocolBufferNanoException(
       "Protocol message end-group tag did not match expected tag.");
   }
 
-  static InvalidProtocolBufferException invalidWireType() {
-    return new InvalidProtocolBufferException(
+  static InvalidProtocolBufferNanoException invalidWireType() {
+    return new InvalidProtocolBufferNanoException(
       "Protocol message tag had invalid wire type.");
   }
 
-  static InvalidProtocolBufferException recursionLimitExceeded() {
-    return new InvalidProtocolBufferException(
+  static InvalidProtocolBufferNanoException recursionLimitExceeded() {
+    return new InvalidProtocolBufferNanoException(
       "Protocol message had too many levels of nesting.  May be malicious.  " +
       "Use CodedInputStream.setRecursionLimit() to increase the depth limit.");
   }
 
-  static InvalidProtocolBufferException sizeLimitExceeded() {
-    return new InvalidProtocolBufferException(
+  static InvalidProtocolBufferNanoException sizeLimitExceeded() {
+    return new InvalidProtocolBufferNanoException(
       "Protocol message was too large.  May be malicious.  " +
       "Use CodedInputStream.setSizeLimit() to increase the size limit.");
   }
