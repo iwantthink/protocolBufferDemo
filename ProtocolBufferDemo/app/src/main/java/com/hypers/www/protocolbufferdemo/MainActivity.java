@@ -33,11 +33,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 buildPb();
 
-                try {
-                    buildJson();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                buildJson();
+
             }
         });
     }
@@ -48,29 +45,28 @@ public class MainActivity extends AppCompatActivity {
         WORK
     }
 
-    private void buildJson() throws Exception {
+    private void buildJson() {
         JSONArray book = new JSONArray();
         for (int i = 0; i < 100; i++) {
-            JSONObject person = new JSONObject();
-            person.put("id", i);
-            person.put("name", "mrb" + i);
-            person.put("email", "mrb" + i + "@gmail.com");
-            JSONArray phones = new JSONArray();
-            JSONObject phone = new JSONObject();
-            phone.put("number", "110_" + i);
-            phone.put("type", PhoneType.Mobile);
-            phones.put(phone);
-            person.put("phones", phones);
-            book.put(person);
+            try {
+                JSONObject person = new JSONObject();
+                person.put("id", i);
+                person.put("name", "mrb" + i);
+                person.put("email", "mrb" + i + "@gmail.com");
+                JSONArray phones = new JSONArray();
+                JSONObject phone = new JSONObject();
+                phone.put("number", "110_" + i);
+                phone.put("type", PhoneType.Mobile);
+                phones.put(phone);
+                person.put("phones", phones);
+                book.put(person);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
-        Log.d("MainActivity", "json book = " + book.toString());
 
         File dir = Environment.getExternalStorageDirectory();
         File file = new File(dir, "addressjson");
-        if (file.exists()) {
-            file.delete();
-        }
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -78,28 +74,29 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
         try {
             byte[] b = book.toString().getBytes();
-            FileOutputStream fos = new FileOutputStream(file);
+            fos = new FileOutputStream(file);
             fos.write(b);
             fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        FileInputStream fis = null;
-        try {
             fis = new FileInputStream(file);
-            Log.d("MainActivity", "fis.available():" + fis.available());
+            Log.d("MainActivity", "Json fis.available():" + fis.available());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            fis.close();
+            try {
+                fis.close();
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
+
     }
 
     private void buildPb() {
@@ -125,9 +122,6 @@ public class MainActivity extends AppCompatActivity {
 
         File dir = Environment.getExternalStorageDirectory();
         File file = new File(dir, "address");
-        if (file.exists()) {
-            file.delete();
-        }
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -135,22 +129,15 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        Log.d("MainActivity", file.getAbsolutePath());
         FileOutputStream fos = null;
+        FileInputStream fis = null;
         try {
             byte[] arry = AddressBookProtos.AddressBook.toByteArray(book);
-            Log.d("MainActivity", "arry.length:" + arry.length);
             fos = new FileOutputStream(file);
             fos.write(arry);
             fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            Log.d("MainActivity", "fis.available():" + fis.available());
+            fis = new FileInputStream(file);
+            Log.d("MainActivity", "ProtoBuf fis.available():" + fis.available());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -158,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
         } finally {
             try {
                 fos.close();
+                fis.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
