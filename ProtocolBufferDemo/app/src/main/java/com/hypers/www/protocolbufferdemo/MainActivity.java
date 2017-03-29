@@ -9,10 +9,15 @@ import android.widget.Button;
 
 import com.hypers.www.protocolbufferdemo.nano.AddressBookProtos;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,26 +31,93 @@ public class MainActivity extends AppCompatActivity {
         mBtnBuild.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buildMrb();
+                buildPb();
+                try {
+                    buildJson();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
-    private void buildMrb() {
+    enum PhoneType {
+        Mobile,
+        HOME,
+        WORK
+    }
+
+    private void buildJson() throws Exception {
+        JSONArray book = new JSONArray();
+        for (int i = 0; i < 100; i++) {
+            JSONObject person = new JSONObject();
+            person.put("id", i);
+            person.put("name", "mrb" + i);
+            person.put("email", "mrb" + i + "@gmail.com");
+            JSONArray phones = new JSONArray();
+            JSONObject phone = new JSONObject();
+            phone.put("number", "110_" + i);
+            phone.put("type", PhoneType.Mobile);
+            phones.put(phone);
+            person.put("phones", phones);
+            book.put(person);
+        }
+
+        Log.d("MainActivity", "json book = " + book.toString());
+
+        File dir = Environment.getExternalStorageDirectory();
+        File file = new File(dir, "addressjson");
+        if (file.exists()) {
+            file.delete();
+        }
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            byte[] b = book.toString().getBytes();
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(b);
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            Log.d("MainActivity", "fis.available():" + fis.available());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void buildPb() {
 
         AddressBookProtos.AddressBook book =
                 new AddressBookProtos.AddressBook();
-
-        AddressBookProtos.Person p1 = new AddressBookProtos.Person();
-        p1.name = "mrb";
-        p1.email = "mrb@gmail.com";
-        p1.id = 1;
-
-        AddressBookProtos.Person.PhoneNumber number = new AddressBookProtos.Person.PhoneNumber();
-        number.number = "110";
-        number.type = AddressBookProtos.Person.MOBILE;
-        p1.phones = new AddressBookProtos.Person.PhoneNumber[]{number};
-        book.people = new AddressBookProtos.Person[]{p1};
+        ArrayList<AddressBookProtos.Person> personsList =
+                new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            AddressBookProtos.Person p = new AddressBookProtos.Person();
+            p.name = "mrb" + i;
+            p.email = "mrb" + i + "@gmail.com";
+            p.id = i;
+            AddressBookProtos.Person.PhoneNumber number = new AddressBookProtos.Person.PhoneNumber();
+            number.number = "110_" + i;
+            number.type = AddressBookProtos.Person.MOBILE;
+            p.phones = new AddressBookProtos.Person.PhoneNumber[]{number};
+            personsList.add(p);
+        }
+        AddressBookProtos.Person[] personsArray =
+                personsList.toArray(new AddressBookProtos.Person[personsList.size()]);
+        book.people = personsArray;
 
         File dir = Environment.getExternalStorageDirectory();
         File file = new File(dir, "address");
@@ -66,6 +138,14 @@ public class MainActivity extends AppCompatActivity {
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(arry);
             fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            Log.d("MainActivity", "fis.available():" + fis.available());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
