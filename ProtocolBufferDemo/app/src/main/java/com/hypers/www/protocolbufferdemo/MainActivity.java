@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    //master
+
     private Button mBtnBuild;
 
     @Override
@@ -88,13 +88,16 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        FileInputStream fis = null;
         try {
-            FileInputStream fis = new FileInputStream(file);
+            fis = new FileInputStream(file);
             Log.d("MainActivity", "fis.available():" + fis.available());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            fis.close();
         }
     }
 
@@ -132,10 +135,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         Log.d("MainActivity", file.getAbsolutePath());
+        FileOutputStream fos = null;
         try {
             byte[] arry = AddressBookProtos.AddressBook.toByteArray(book);
             Log.d("MainActivity", "arry.length:" + arry.length);
-            FileOutputStream fos = new FileOutputStream(file);
+            fos = new FileOutputStream(file);
             fos.write(arry);
             fos.close();
         } catch (FileNotFoundException e) {
@@ -150,6 +154,12 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
