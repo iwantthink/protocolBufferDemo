@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 buildPb();
+
                 try {
                     buildJson();
                 } catch (Exception e) {
