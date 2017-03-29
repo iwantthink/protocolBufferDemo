@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.hypers.www.protocolbufferdemo.nano.AddressBookProtos;
+import com.hypers.www.protocolbufferdemo.nano.HMT;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,11 +33,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 buildPb();
-
                 buildJson();
+
+                buildHMT();
 
             }
         });
+    }
+
+    private void buildHMT() {
+        HMT.HMA hma = new HMT.HMA();
+        HMT.HmtObjBase base = new HMT.HmtObjBase();
+
     }
 
     enum PhoneType {
